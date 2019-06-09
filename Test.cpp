@@ -67,7 +67,13 @@ int main()
         .CHECK_OUTPUT(m3, "0")
         .CHECK_OUTPUT(m4, "2.8X^18")
         .CHECK_OUTPUT(m5, "5")
-        .CHECK_OUTPUT(p1+m1+m2, "2.8X^18 + 4X^4 + 5")
+        .CHECK_OUTPUT(p1+m1+m2+m3+m4+m5, "2.8X^18 + 5.5X^4 + 5")
+        .CHECK_OUTPUT(p1, "0")
+        .CHECK_OUTPUT(p1+m1-m2+m3-m4-m5, "-2.8X^18 + 2.5X^4 - 5");
+        p1=p1+m1+m2+m3+m4+m5;
+        testcase .setname("Polynom operator")
+        .CHECK_OUTPUT(p1, "2.8X^18 + 5.5X^4 + 5")
+        .CHECK_OUTPUT(p1+m1+m2+m3+m4+m5, "8.4X^18 + 16.5X^4 + 10")
         ; testcase.print();
         grade = testcase.grade();
     } else {

@@ -54,7 +54,7 @@ public:
     /**
      * function that add two polynoms
      */
-    Polynom& operator+(const Polynom &p1) {
+    Polynom operator+(const Polynom &p1) {
         for (auto v:p1.pol){
             *this+v;
         }
@@ -63,7 +63,8 @@ public:
     /**
      * function that add a monom to a polynom
      */
-    Polynom& operator+(const Monom &m1) {
+    const Polynom operator+(const Monom &m1) const{
+        Polynom p1=*this;
         bool found_power = false;
         
         if(m1.get_coefficient()==0)
@@ -75,15 +76,16 @@ public:
             /**
              *check if power is equal
              */
-            if (pol[i].get_power() == m1.get_power()) {
-                pol[i]+m1;
+            if (p1.pol[i].get_power() == m1.get_power()) {
+               p1.pol.push_back(p1.pol[i]+m1);
+                p1.pol.erase(p1.pol.begin()+i);
                 found_power = true;
                 /**
                  *check if c coefficient is zero
                  if yes then remove the monom from the polynom
                  */
-                if (pol[i].get_coefficient() == 0)
-                    pol.erase(pol.begin()+i);
+                if (p1.pol[i].get_coefficient() == 0)
+                    p1.pol.erase(p1.pol.begin()+i);
             }
         }
         /**
@@ -93,84 +95,100 @@ public:
             /**
              * add the new monom to the polynom
              */
-            pol.push_back(m1);
-            /**
-             *sort the polynom by powers
-             */
-            sort(pol.begin(),pol.end(),compare);
+            p1.pol.push_back(m1);
         }
-        return *this;
+        /**
+         *sort the polynom by powers
+         */
+        sort(p1.pol.begin(),p1.pol.end(),compare);
+        return p1;
     }
     /**
      * function that delete monom from polynom
      */
-    Polynom& operator-(const Monom &m1) {
+    const Polynom operator-(const Monom &m1) const{
+        Polynom p1=*this;
         bool found_power = false;
+        
+        if(m1.get_coefficient()==0)
+            return *this;
         /**
-         * check if there is power and the v has a next monom
+         *check if v has a next monom
          */
         for (int i=0;i<pol.size();i++) {
             /**
              *check if power is equal
              */
-            if (pol[i].get_power() == m1.get_power()) {
-                pol[i]-m1;
+            if (p1.pol[i].get_power() == m1.get_power()) {
+                p1.pol.push_back(p1.pol[i]-m1);
+                p1.pol.erase(p1.pol.begin()+i);
                 found_power = true;
                 /**
                  *check if c coefficient is zero
                  if yes then remove the monom from the polynom
                  */
-                if (pol[i].get_coefficient() == 0)
-                    pol.erase(pol.begin()+i);
+                if (p1.pol[i].get_coefficient() == 0)
+                    p1.pol.erase(p1.pol.begin()+i);
             }
         }
+        /**
+         *check if there is not a simular power
+         */
         if (!found_power) {
-            Monom m2(m1.get_coefficient() * -1, m1.get_power());
-            pol.push_back(m2);
-            sort(pol.begin(),pol.end(),compare);
+            /**
+             * add the new monom to the polynom
+             */
+            p1.pol.push_back(m1);
         }
-        return *this;
+        /**
+         *sort the polynom by powers
+         */
+        sort(p1.pol.begin(),p1.pol.end(),compare);
+        return p1;
     }
     
     /**
      *function that substracts two polynoms
      */
-    Polynom& operator-(const Polynom &p1) {
+    const Polynom operator-(const Polynom &p1) const{
+        Polynom p=*this;
         for (auto v:p1.pol){
-            *this-v;
+            p-v;
         }
-        return *this;
+        return p;
     }
     /**
      * function that multiple two polynoms and returns the new polynom
      */
-    Polynom& operator*(const Polynom &p1) {
-        if(!isZero() && !p1.isZero()) {
-            Polynom copy;
+    const Polynom operator*(const Polynom &p1) const{
+        Polynom copy=*this;
+        if(!copy.isZero() && !p1.isZero()) {
             Polynom h=*this;
             h*p1.pol[0];
             copy=h;
             for(int i=1;i<p1.pol.size();i++){
                 h=*this;
-                h*p1.pol[i];
-                copy+h;
+                h=h*p1.pol[i];
+                copy=copy+h;
             }
-            *this=copy;
         }
-        return *this;
+        return copy;
     }
     /**
      * function that multiple two monoms
      */
-    Polynom& operator*(const Monom &m1) {
+    const Polynom operator*(const Monom &m1) const{
+        Polynom p1=*this;
         if(m1.get_coefficient()==0)
-            pol.clear();
+            p1.pol.clear();
         else {
             for(int i=0;i<pol.size();i++) {
-                pol[i]*m1;
+                p1.pol.push_back(pol[i]*m1);
+                p1.pol.erase(p1.pol.begin()+i);
             }
         }
-        return *this;
+        sort(p1.pol.begin(),p1.pol.end(),compare);
+        return p1;
     }
     /**
      *function that returns the size of the polynom
@@ -248,15 +266,15 @@ public:
         }
         return x1;
     }
-    /**
-     *function that adds new monom to the polynom
-     */
-    Polynom(const Polynom &p1) {
-        for (auto iter : p1.pol){
-            Monom m(iter);
-            *this+Monom(m);
-        }
-    }
+//    /**
+//     *function that adds new monom to the polynom
+//     */
+//    Polynom(const Polynom &p1) {
+//        for (auto iter : p1.pol){
+//            Monom m(iter);
+//            *this+Monom(m);
+//        }
+//    }
     /**
      *deep copy
      */
