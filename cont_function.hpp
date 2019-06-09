@@ -10,6 +10,7 @@
 #define cont_function_hpp
 
 #include "function.hpp"
+namespace ariel{
 class cont_function:public function{
     /**
      * Compute a Riman's integral from x0 to x1 in eps steps.
@@ -20,4 +21,6 @@ class cont_function:public function{
      */
      virtual double area(double x0, double x1, double eps)=0;
 };
+};
 #endif /* cont_function_hpp */
+
