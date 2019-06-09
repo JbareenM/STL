@@ -17,114 +17,115 @@
 using std::string;
 
 namespace ariel{
-class Monom:public function{
-public:
-    double get_coefficient() const{return _coefficient;}
-    int get_power() const{return _power;}
-    /**
-     *function that check if two monoms are equal
-     */
-    bool operator==(const Monom &m1) {
-        if(_coefficient != m1._coefficient || _power != m1._power)
-            return false;
-        return true;
-    }
-    bool operator!=(const Monom &m1) {
-        return !(*this==m1)
-        ;    }
-    /**
-     * function that returns the result of a monom in a random x
-     */
-    double f(double x) {
-        return _coefficient*pow(x, _power);
-    }
-    /**
-     *constructor
-     */
-    Monom(const string s) {
-        std::istringstream(s)>>*this;
-    }
-    /**
-     *a function that multiples two monoms
-     */
-    const Monom operator*(const Monom &ot) const{
+    class Monom:public function{
+    public:
+        double get_coefficient() const{return _coefficient;}
+        int get_power() const{return _power;}
         /**
-         * multiple the two cofficents
+         *function that check if two monoms are equal
          */
-        Monom m;
-        m._coefficient=_coefficient*ot._coefficient;
-        /**
-         * add the two powers
-         */
-        m._power=_power+ot._power;
-        return m;
-    }
-    /**
-     *     function that compute the dervivate of a monom
-     */
-    const Monom& derivative(){
-        _coefficient=_coefficient*_power;
-        _power=_power-1;
-        return *this;
-    }
-    /**
-     *function that add two monoms
-     */
-    const Monom operator+(const Monom &ot) const{
-        /**
-         * if the power of the monoms is not equal they can not be added
-         */
-        Monom m;
-        if (ot._power != _power)throw ("error could not add diffrent power");
-        m._coefficient=_coefficient+ot._coefficient;
-        m._power=_power;
-        return m;
-    }
-    /**
-     *function that substracts two monoms
-     */
-    const Monom operator-(const Monom &ot) const{
-        /**
-         * if the power of the monoms is not equal they can not be added
-         */
-        Monom m;
-        if (ot._power != _power)throw ("error could not add diffrent power");
-        m._coefficient=_coefficient - ot._coefficient;
-        m._power=_power;
-        return m;
-    }
-    /**
-     *constructor
-     */
-    Monom(double a=0, int b=0):_coefficient(a),_power(b){
-        if (b < 0) throw ("error have to be greater than 0");
-    }
-    /**
-     * copy constructor
-     */
-    Monom(const Monom &ot) {
-        if (ot._coefficient==0 && ot._power==0) throw ("error can not be null");
-        else    {
-            _coefficient = ot._coefficient;
-            _power = ot._power;
+        bool operator==(const Monom &m1) {
+            if(_coefficient != m1._coefficient || _power != m1._power)
+                return false;
+            return true;
         }
+        bool operator!=(const Monom &m1) {
+            return !(*this==m1)
+            ;    }
+        /**
+         * function that returns the result of a monom in a random x
+         */
+        double f(double x) {
+            return _coefficient*pow(x, _power);
+        }
+        /**
+         *constructor
+         */
+        Monom(const string s) {
+            std::istringstream(s)>>*this;
+        }
+        /**
+         *a function that multiples two monoms
+         */
+        const Monom operator*(const Monom &ot) const{
+            /**
+             * multiple the two cofficents
+             */
+            Monom m;
+            m._coefficient=_coefficient*ot._coefficient;
+            /**
+             * add the two powers
+             */
+            m._power=_power+ot._power;
+            return m;
+        }
+        /**
+         *     function that compute the dervivate of a monom
+         */
+        const Monom derivative() const{
+            Monom m;
+            m._coefficient=_coefficient*_power;
+            m._power=_power-1;
+            return m;
+        }
+        /**
+         *function that add two monoms
+         */
+        const Monom operator+(const Monom &ot) const{
+            /**
+             * if the power of the monoms is not equal they can not be added
+             */
+            Monom m;
+            if (ot._power != _power)throw ("error could not add diffrent power");
+            m._coefficient=_coefficient+ot._coefficient;
+            m._power=_power;
+            return m;
+        }
+        /**
+         *function that substracts two monoms
+         */
+        const Monom operator-(const Monom &ot) const{
+            /**
+             * if the power of the monoms is not equal they can not be added
+             */
+            Monom m;
+            if (ot._power != _power)throw ("error could not add diffrent power");
+            m._coefficient=_coefficient - ot._coefficient;
+            m._power=_power;
+            return m;
+        }
+        /**
+         *constructor
+         */
+        Monom(double a=0, int b=0):_coefficient(a),_power(b){
+            if (b < 0) throw ("error have to be greater than 0");
+        }
+        /**
+         * copy constructor
+         */
+        Monom(const Monom &ot) {
+            if (ot._coefficient==0 && ot._power==0) throw ("error can not be null");
+            else    {
+                _coefficient = ot._coefficient;
+                _power = ot._power;
+            }
+        }
+        friend std::ostream &operator<<(std::ostream& out,const Monom &m);
+        friend std::istream &operator>>(std::istream& is,Monom &m);
+        //****************** Private Methods and Data *****************
+    private:
+        double _coefficient;
+        int _power;
+    };
+    std::ostream &operator<<(std::ostream& out,const Monom &m) {
+        if(m._coefficient == 0)
+            return out<<"0";
+        else if(m._power == 0)
+            return out<< m._coefficient ;
+        else if(m._power == 1)
+            return out<< m._coefficient << "X";
+        return out<< m._coefficient << "X^" << m._power;
     }
-    friend std::ostream &operator<<(std::ostream& out,const Monom &m);
-    friend std::istream &operator>>(std::istream& is,Monom &m);
-    //****************** Private Methods and Data *****************
-private:
-    double _coefficient;
-    int _power;
-};
-std::ostream &operator<<(std::ostream& out,const Monom &m) {
-    if(m._coefficient == 0)
-        return out<<"0";
-    else if(m._power == 0)
-        return out<< m._coefficient ;
-    else if(m._power == 1)
-        return out<< m._coefficient << "X";
-    return out<< m._coefficient << "X^" << m._power;
-}
     std::istream &operator>>(std::istream& is, Monom &m1){
         string s;
         is>>s;
@@ -179,6 +180,7 @@ std::ostream &operator<<(std::ostream& out,const Monom &m) {
         }
         m1._coefficient=a;
         m1._power=b;
+        if(b<0) throw("error!");
         return is;
     }
 };
