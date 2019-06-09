@@ -47,16 +47,17 @@ public:
     /**
      *a function that multiples two monoms
      */
-    Monom& operator*(const Monom &ot) {
+    const Monom operator*(const Monom &ot) const{
         /**
          * multiple the two cofficents
          */
-        _coefficient=_coefficient*ot._coefficient;
+        Monom m;
+        m._coefficient=_coefficient*ot._coefficient;
         /**
          * add the two powers
          */
-        _power=_power+ot._power;
-        return *this;
+        m._power=_power+ot._power;
+        return m;
     }
     /**
      *     function that compute the dervivate of a monom
@@ -69,24 +70,28 @@ public:
     /**
      *function that add two monoms
      */
-    const Monom& operator+(const Monom &ot){
+    const Monom operator+(const Monom &ot) const{
         /**
          * if the power of the monoms is not equal they can not be added
          */
+        Monom m;
         if (ot._power != _power)throw ("error could not add diffrent power");
-        _coefficient=_coefficient+ot._coefficient;
-        return *this;
+        m._coefficient=_coefficient+ot._coefficient;
+        m._power=_power;
+        return m;
     }
     /**
      *function that substracts two monoms
      */
-    const Monom& operator-(const Monom &ot) {
+    const Monom operator-(const Monom &ot) const{
         /**
          * if the power of the monoms is not equal they can not be added
          */
+        Monom m;
         if (ot._power != _power)throw ("error could not add diffrent power");
-        _coefficient=_coefficient - ot._coefficient;
-        return *this;
+        m._coefficient=_coefficient - ot._coefficient;
+        m._power=_power;
+        return m;
     }
     /**
      *constructor
