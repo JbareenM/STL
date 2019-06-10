@@ -220,8 +220,9 @@ public:
         }
         return ans;
     }
-    
-    
+    bool operator!=(const Polynom &p1) {
+        return !(*this==p1);
+    }
     /**
      *function that check if the polynom is a zero polynom
      */
@@ -262,15 +263,6 @@ public:
         }
         return x1;
     }
-//    /**
-//     *function that adds new monom to the polynom
-//     */
-//    Polynom(const Polynom &p1) {
-//        for (auto iter : p1.pol){
-//            Monom m(iter);
-//            *this+Monom(m);
-//        }
-//    }
     /**
      *deep copy
      */
@@ -280,6 +272,18 @@ public:
             //Monom m1(v);
             pol.push_back(v);
         }
+        return *this;
+    }
+    const Polynom& operator+=(const Monom &p1) {
+        *this=*this+p1;
+        return *this;
+    }
+    const Polynom& operator-=(const Monom &p1) {
+        *this=*this-p1;
+        return *this;
+    }
+    const Polynom& operator*=(const Monom &p1) {
+        *this=*this*p1;
         return *this;
     }
     const Polynom& operator+=(const Polynom &p1) {
