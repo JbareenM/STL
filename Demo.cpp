@@ -14,26 +14,46 @@
 using namespace std;
 using namespace ariel;
 int main() {
-    Polynom p3;
-    p3+Monom(2,8);
-    p3+Monom(2,7);
-    p3+Monom(2,5)+Monom(2,6);
-    cout<<p3<<endl;
-    double _coefficient1 = 5 ;
-    int _pow1 = 2 ;
-    double _coefficient2 = 7.8;
-    int _pow2 = 7 ;
-    double _coefficient3 =4 ;
-    int _pow3 = 1;
-    stringstream s;
-    s<<_coefficient3<<"x^"<<_pow3<<"+"<<_coefficient2<<"x^"<<_pow2<<"+"<<_coefficient1<<"x^"<<_pow1;
-    Polynom p(s.str());
-    cout<<p<<endl;
-    try{
-        Monom m(5,-1);
-        cout<<m<<endl;
-    }catch(...){
-        cout<<"error!"<<endl;
+    try {
+        Polynom p3;
+        Monom m1(5,4);
+        Monom m2(4,4);
+        cout << p3 << endl;   // Prints "0"
+        cout << (p3+Monom(2,8))<<endl;
+        cout << (p3-Monom(2,7)) << endl;
+        cout << (-Monom(5,4)) << endl;
+        cout << (Monom(3,4)-Monom(5,4)) << endl;
+        
+        cout<<(p3+=m1)<<endl;
+        cout<<(p3+=m2)<<endl;
+        cout<<(p3*=Monom(2,0))<<endl;
+        cout << p3 << endl;
+        istringstream in("700X^4-5x^5+2x+5-1x");
+        in>>p3;
+        cout << p3 << endl;
+        cout << (Monom(3,4)*Monom(5,2)) << endl;
+        cout << (Monom(3,4)-Monom(5,4)) << endl;
+        cout << (Monom(3,4)+Monom(5,4)) << endl;
+        cout << (Monom(3,4)*Monom(5,4)) << endl;
+        
+        cout << boolalpha; // print booleans as strings from now on:
+        cout <<(Monom(5,4)==Monom(4,4)) << endl;// Prints "false"
+        cout <<(Monom(5,4)==Monom(5,4)) << endl;
+        
+        istringstream input("700X^4");
+        input >> m1;
+        cout << m1 << endl;
+        cout << (m1 += Monom(4,4)) << endl;
+        cout << m1<< endl;
+        try {
+            Monom m(5,-1);
+            cout<<m<<endl;
+        } catch (const std::exception& ex) {
+            cout << ex.what() << endl; // Prints "Units do not match - [m] cannot be converted to [kg]"
+        }
+    } catch (...) {
+        cout << "Unexpected exception!" << endl;
     }
     return 0;
 }
+

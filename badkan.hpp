@@ -1,10 +1,3 @@
-//
-//  badkan.hpp
-//  STL
-//
-//  Created by Jeme Jbareen on 6/9/19.
-//  Copyright © 2019 Jeme Jbareen. All rights reserved.
-//
 /**
  * Defines the class TestCase, that represents a test-case
  * in an automatic testing program.
@@ -179,5 +172,4 @@ namespace badkan {
         
     }; // end class TestCase
     
-}; // end namespace badkan
 }; // end namespace badkan
