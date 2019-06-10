@@ -24,16 +24,6 @@
 using std::string;
 namespace ariel{
 
-//https://stackoverflow.com/questions/2896600/how-to-replace-all-occurrences-of-a-character-in-string
-std::string ReplaceAll(std::string str, const std::string& from, const std::string& to) {
-    size_t start_pos = 0;
-    while((start_pos = str.find(from, start_pos)) != std::string::npos) {
-        str.replace(start_pos, from.length(), to);
-        start_pos += to.length(); // Handles case where 'to' is a substring of 'from'
-    }
-    return str;
-}
-
 class Polynom:public cont_function {
 private:
     /**
@@ -54,11 +44,12 @@ public:
     /**
      * function that add two polynoms
      */
-    Polynom operator+(const Polynom &p1) {
+    const Polynom operator+(const Polynom &p1) const{
+        Polynom p=*this;
         for (auto v:p1.pol){
-            *this+v;
+            p=p+v;
         }
-        return *this;
+        return p;
     }
     /**
      * function that add a monom to a polynom
@@ -68,17 +59,18 @@ public:
         bool found_power = false;
         
         if(m1.get_coefficient()==0)
-            return *this;
+            return p1;
         /**
          *check if v has a next monom
          */
-        for (int i=0;i<pol.size();i++) {
+        for (int i=0;!found_power&&i<p1.pol.size();i++) {
             /**
              *check if power is equal
              */
             if (p1.pol[i].get_power() == m1.get_power()) {
-               p1.pol.push_back(p1.pol[i]+m1);
+                Monom ans(p1.pol[i]+m1);
                 p1.pol.erase(p1.pol.begin()+i);
+                p1.pol.insert(p1.pol.begin()+i, ans);
                 found_power = true;
                 /**
                  *check if c coefficient is zero
@@ -111,17 +103,18 @@ public:
         bool found_power = false;
         
         if(m1.get_coefficient()==0)
-            return *this;
+            return p1;
         /**
          *check if v has a next monom
          */
-        for (int i=0;i<pol.size();i++) {
+        for (int i=0;!found_power&&i<p1.pol.size();i++) {
             /**
              *check if power is equal
              */
             if (p1.pol[i].get_power() == m1.get_power()) {
-                p1.pol.push_back(p1.pol[i]-m1);
+                Monom ans(p1.pol[i]-m1);
                 p1.pol.erase(p1.pol.begin()+i);
+                p1.pol.insert(p1.pol.begin()+i, ans);
                 found_power = true;
                 /**
                  *check if c coefficient is zero
@@ -138,7 +131,7 @@ public:
             /**
              * add the new monom to the polynom
              */
-            p1.pol.push_back(m1);
+            p1.pol.push_back(-m1);
         }
         /**
          *sort the polynom by powers
@@ -153,7 +146,7 @@ public:
     const Polynom operator-(const Polynom &p1) const{
         Polynom p=*this;
         for (auto v:p1.pol){
-            p-v;
+            p=p-v;
         }
         return p;
     }
@@ -161,10 +154,11 @@ public:
      * function that multiple two polynoms and returns the new polynom
      */
     const Polynom operator*(const Polynom &p1) const{
-        Polynom copy=*this;
-        if(!copy.isZero() && !p1.isZero()) {
+        Polynom copy;
+        if(!(*this).isZero() && !p1.isZero()) {
+            copy=*this;
             Polynom h=*this;
-            h*p1.pol[0];
+            h=h*p1.pol[0];
             copy=h;
             for(int i=1;i<p1.pol.size();i++){
                 h=*this;
@@ -182,9 +176,11 @@ public:
         if(m1.get_coefficient()==0)
             p1.pol.clear();
         else {
-            for(int i=0;i<pol.size();i++) {
-                p1.pol.push_back(pol[i]*m1);
+            for(int i=0;i<p1.pol.size();i++) {
+                Monom ans(p1.pol[i]*m1);
                 p1.pol.erase(p1.pol.begin()+i);
+                p1.pol.insert(p1.pol.begin()+i, ans);
+                
             }
         }
         sort(p1.pol.begin(),p1.pol.end(),compare);
@@ -193,7 +189,7 @@ public:
     /**
      *function that returns the size of the polynom
      */
-    int size() const{return pol.size();}
+    auto size() const{return pol.size();}
     
     /**
      *function that check if all the monoms in the two polynoms are equal
@@ -289,11 +285,12 @@ public:
     /**
      * function that returns the derivative of a polynom
      */
-    Polynom& derivative() {
+    const Polynom derivative() const{
+        Polynom p;
         for(int i=0;i<pol.size();i++) {
-            pol[i].derivative();
+            p.pol.push_back(pol[i].derivative());
         }
-        return *this;
+        return p;
     }
     
     /**
@@ -345,21 +342,6 @@ public:
     Polynom(const string str) {
         std::istringstream(str)>>*this;
     }
-    //    void remove(const Monom &m1) {
-    //        //if(!contains(m1)) throw ("value not found!");
-    //            std::vector<Monom>::iterator itr;
-    //            //itr=find(pol.begin(), pol.end(), m1);
-    //           //if (itr != pol.end())
-    //               // pol.erase(itr);
-    //    }
-    //    bool contains(const Monom& m1) {
-    //        std::vector<Monom>::iterator itr;
-    //        itr=find(pol.begin(), pol.end(), &m1);
-    //        if (itr != pol.end()){
-    //            return true;
-    //        }
-    //        return false;
-    //    }
     friend Polynom operator+(const Monom &a,const Polynom &b);
     friend Polynom operator*(const Monom &a,const Polynom &b);
     friend Polynom operator/(const Monom &a,const Polynom &b);
@@ -368,17 +350,17 @@ public:
 };
 Polynom operator+(const Monom &a,const Polynom &b){
     Polynom p=b;
-    p+a;
+    p=p+a;
     return p;
 }
 Polynom operator-(const Monom &a,const Polynom &b){
     Polynom p=b;
-    p-a;
+    p=p-a;
     return p;
 }
 Polynom operator*(const Monom &a,const Polynom &b){
     Polynom p=b;
-    p*a;
+    p=p*a;
     return p;
 }
 std::ostream &operator<<(std::ostream& out,const Polynom &a){
@@ -396,55 +378,30 @@ std::ostream &operator<<(std::ostream& out,const Polynom &a){
             std::stringstream r;
             r<< m;
             string str=r.str();
-            str.substr(1);
-            s<<" - " << r.str();
+            str=str.substr(1);
+            s<<" - " << str;
         }
     }
     if(a.pol.size()==0) out<<"0";
     return out<<s.str();
 }
 std::istream &operator>>(std::istream& in,Polynom &p){
-    int start=0,end=0;
+    p.pol.clear();
     string str;
     in>>str;
     string st;
-    st.append(ReplaceAll(str, " ", ""));
-    st.append("+");
-    if(st.at(0)!='+'&&st.at(0)!='-')
-        st.insert(0, 1,'+');
+    str=ReplaceAll(str, "-", " -");
+    st.append(ReplaceAll(str, "+", " "));
+    st.append(" ");
+    if(st.at(0)!=' '&&st.at(0)!='-')
+        st.insert(0, 1,' ');
+    st=ReplaceAll(st, "  ", " ");
     string s="";
-    for (int i = 0; i < st.length(); i++) {
-        if(i==st.length()-1)
-            break;
-        if(st.at(i)=='+') {
-            start=i+1;
-            for (int j = i+1; j < st.length(); j++) {
-                if(st.at(j)=='+'||st.at(j)=='-') {
-                    end=j;
-                    break;
-                }
-                else if(j==st.length()) {
-                    end=st.length();
-                    break;
-                }
-            }
-            s=st.substr(start,end);
-            p+Monom(s);
-        }
-        else if(st.at(i)=='-') {
-            start=i;
-            for (int j = i+1; j < st.length(); j++) {
-                if(st.at(j)=='+'||st.at(j)=='-') {
-                    end=j;
-                    break;
-                }
-                else if(j==st.length()) {
-                    end=st.length();
-                    break;
-                }
-            }
-            s=st.substr(start,end);
-            p+Monom(s);
+    for (string::size_type i = 1; i < st.length(); i++) {
+        s+=st[i];
+        if(st.at(i)==' ') {
+            p=p+Monom(s);
+            s.clear();
         }
     }
     return in;

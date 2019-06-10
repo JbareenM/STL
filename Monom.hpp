@@ -17,6 +17,15 @@
 using std::string;
 
 namespace ariel{
+    //https://stackoverflow.com/questions/2896600/how-to-replace-all-occurrences-of-a-character-in-string
+    std::string ReplaceAll(std::string str, const std::string& from, const std::string& to) {
+        size_t start_pos = 0;
+        while((start_pos = str.find(from, start_pos)) != std::string::npos) {
+            str.replace(start_pos, from.length(), to);
+            start_pos += to.length(); // Handles case where 'to' is a substring of 'from'
+        }
+        return str;
+    }
     class Monom:public function{
     public:
         double get_coefficient() const{return _coefficient;}
@@ -94,6 +103,9 @@ namespace ariel{
             m._power=_power;
             return m;
         }
+        const Monom operator-() const{
+             return Monom(-_coefficient,_power);
+        }
         /**
          *constructor
          */
@@ -104,11 +116,8 @@ namespace ariel{
          * copy constructor
          */
         Monom(const Monom &ot) {
-            if (ot._coefficient==0 && ot._power==0) throw ("error can not be null");
-            else    {
-                _coefficient = ot._coefficient;
-                _power = ot._power;
-            }
+            _coefficient = ot._coefficient;
+            _power = ot._power;
         }
         friend std::ostream &operator<<(std::ostream& out,const Monom &m);
         friend std::istream &operator>>(std::istream& is,Monom &m);
@@ -146,6 +155,7 @@ namespace ariel{
              *if it is smaller then return the coefficient of the monom and change it to double
              */
             a = atof(in.c_str());
+            b=0;
         }
         else {
             /**
@@ -172,9 +182,9 @@ namespace ariel{
                 b = atoi(p.c_str());
                 if (b != 1)  throw("error");
             }
-            
             else {
                 string v = in.substr(inp+1);
+
                 b = atoi(v.c_str());
             }
         }
