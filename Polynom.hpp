@@ -274,12 +274,24 @@ public:
     /**
      *deep copy
      */
-    Polynom& operator=(const Polynom &p1) {
+    const Polynom& operator=(const Polynom &p1) {
         pol.clear();
         for(auto v:p1.pol) {
             //Monom m1(v);
             pol.push_back(v);
         }
+        return *this;
+    }
+    const Polynom& operator+=(const Polynom &p1) {
+        *this=*this+p1;
+        return *this;
+    }
+    const Polynom& operator-=(const Polynom &p1) {
+        *this=*this-p1;
+        return *this;
+    }
+    const Polynom& operator*=(const Polynom &p1) {
+        *this=*this*p1;
         return *this;
     }
     /**

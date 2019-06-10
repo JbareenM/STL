@@ -38,9 +38,7 @@ namespace ariel{
                 return false;
             return true;
         }
-        bool operator!=(const Monom &m1) {
-            return !(*this==m1)
-            ;    }
+        bool operator!=(const Monom &m1) {return !(*this==m1);}
         /**
          * function that returns the result of a monom in a random x
          */
@@ -89,6 +87,18 @@ namespace ariel{
             m._coefficient=_coefficient+ot._coefficient;
             m._power=_power;
             return m;
+        }
+        const Monom& operator+=(const Monom &ot){
+            *this=*this+ot;
+            return *this;
+        }
+        const Monom& operator-=(const Monom &ot){
+            *this=*this-ot;
+            return *this;
+        }
+        const Monom& operator*=(const Monom &ot){
+            *this=*this*ot;
+            return *this;
         }
         /**
          *function that substracts two monoms
