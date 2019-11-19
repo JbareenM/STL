@@ -1,5 +1,3 @@
- 207392283,314638867
-
 ## **descreption**
 the Main idea was to learn about STL 
 This project represents monomial, polynomial with many functions and operations
